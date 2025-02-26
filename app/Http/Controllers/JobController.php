@@ -59,7 +59,8 @@ class JobController extends Controller
 
     Job::create($validatedData);
 
-        return redirect()->route('jobs.index')->with('success', 'Job listing created successfully');
+    return redirect()->route('jobs.index')->with('success', 'Job listing created successfully!');
+        
     }
 
     /**
