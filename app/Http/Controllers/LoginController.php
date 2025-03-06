@@ -38,4 +38,17 @@ class LoginController extends Controller
         ])->onlyInput('email');
 
        }
+
+    // @desc Logout user
+    // @route POST /logout
+   public function logout(Request $request): RedirectResponse {
+    Auth::logout();
+
+    //Invalidate the session
+    $request->session()->invalidate();
+    //Regenerate CSRF token
+    $request->session()->regenerateToken();
+
+    return redirect('/');
+   }
 }
