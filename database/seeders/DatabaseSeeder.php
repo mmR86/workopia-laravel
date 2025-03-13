@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->truncate();
 
         //call the users first because we want to assign the random user id to every job
+        $this->call(TestUserSeeder::class);
         $this->call(RandomUserSeeder::class);
         $this->call(JobSeeder::class);
     }
