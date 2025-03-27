@@ -1,10 +1,28 @@
 <x-layout>
-    <h1><b>Dashboard</b></h1>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+    <div class="bg-white p-8 rounded-lg shadow md w-full">
+        <h3 class="text-3xl text-center font-bold mb-4">
+            My Job Listings
+        </h3>
         @forelse($jobs as $job)
-            <x-job-card :job="$job" />
-            @empty
-            <p>No jobs available</p>
+        <div class="flex justify-between items-center border-b-2 border-grey-200 py-2">
+            <div>
+                <h3 class="text-xl font-semibold">{{$job->title}}</h3>
+                <p class="text-grey-700">{{$job->job_type}}</p>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{route('jobs.edit', $job->id)}}" class="bg-blue-500 text-white px-4 py-2 rounded text-sm">Edit</a>
+                <!-- Delete Form -->
+                <form method="POST" action="{{route('jobs.destroy', $job->id)}}?from=dashboard" onsubmit="return confirm('Are you sure you want to delete this job?')">
+                    @csrf
+                    @method("DELETE")
+                    <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded text-sm">Delete</button>
+                </form>
+            </div>
+        </div>
+        @empty
+        <p class="text-grey-700">
+            You have no job listings yet!
+        </p>
         @endforelse
     </div>
 </x-layout>
