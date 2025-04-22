@@ -12,6 +12,15 @@ class ApplicantController extends Controller
     //@desc Store new job application
     //@route POST /jobs/{job}/apply
     public function store(Request $request, Job $job): RedirectResponse {
+
+        //Check if the user already applied
+        $existingApplication = Applicant::where('job_id', $job->id)->where('user_id', auth()->id())->exists();
+
+        if($existingApplication) {
+            return redirect()->back()->with('error', 'You allready applied to this job, move on!');
+        }
+
+
         // Validate incoming data
         $validatedData = $request->validate([
             'full_name' => 'required|string',
@@ -35,5 +44,13 @@ class ApplicantController extends Controller
         $application->save();
 
         return redirect()->back()->with('success', 'Your application has been submitted!');
+    }
+
+    //@desc Delete job applicant
+    //@route DELETE /applicants/{applicant}
+    public function destroy($id): RedirectResponse {
+        $applicant = Applicant::findOrFail($id);
+        $applicant->delete();
+        return redirect()->route('dashboard')->with('success', 'Applicant deleted successfully!');
     }
 }
