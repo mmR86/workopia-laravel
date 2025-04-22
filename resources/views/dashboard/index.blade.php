@@ -30,7 +30,7 @@
                 My Job Listings
             </h3>
             @forelse($jobs as $job)
-            <div class="flex justify-between items-center border-b-2 border-grey-200 py-2">
+            <div class="flex justify-between items-center border-grey-200 py-2">
                 <div>
                     <h3 class="text-xl font-semibold">{{$job->title}}</h3>
                     <p class="text-grey-700">{{$job->job_type}}</p>
@@ -44,6 +44,31 @@
                         <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded text-sm">Delete</button>
                     </form>
                 </div>
+            </div>
+            {{-- Applicants --}}
+            <div class="mt-4 border-b-2 bg-gray-100 p-2 rounded">
+                <h4 class="text-lg font-semibold mb-2">Applicants:</h4>
+                @forelse($job->applicants as $applicant)
+                <div class="py-2">
+                    <p class="text-gray-800">
+                        <strong>Name: </strong>{{$applicant->full_name}}
+                    </p>
+                    <p class="text-gray-800">
+                        <strong>Phone: </strong>{{$applicant->contact_phone}}
+                    </p>
+                    <p class="text-gray-800">
+                        <strong>Email: </strong>{{$applicant->contact_email}}
+                    </p>
+                    <p class="text-gray-800">
+                        <strong>Message: </strong>{{$applicant->message}}
+                    </p>
+                    <p class="text-gray-800 my-4">
+                        <a href="{{asset('storage/' . $applicant->resume_path)}}" class="text-blue-500 hover:underline" download><i class="fas fa-download"></i> Download Resume</a>
+                    </p>
+                </div>
+                @empty
+                    <p class="text-gray-700">No applicants for this job!</p>
+                @endforelse
             </div>
             @empty
             <p class="text-grey-700">
