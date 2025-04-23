@@ -158,4 +158,38 @@ class JobController extends Controller
 
         return redirect()->route('jobs.index')->with('success', 'Job listing deleted successfully!');
     }
+
+    //@desc Search job listings
+    //@route GET /jobs/search
+    public function search(Request $request): View {
+        
+        $keywords = strtolower($request->input('keywords'));
+        $location = strtolower($request->input('location'));
+
+        //set a query to the job madel
+        $query = Job::query();
+
+        if($keywords) {
+            //where is being called on the query builder object and inside the where closure (an anonymous function) is used. This closure allows us to encapsulate multiple conditions for the where method. The use ($keywords) allows us to pass variables from the parent scope. Without the "use", the closure wouldn't have access to the keyword variable.
+            $query->where(function ($q) use ($keywords) {
+                //write raw sql query
+                $q->whereRaw('LOWER(title) like ?', ['%' . $keywords . '%'])
+                    ->orWhereRaw('LOWER(description) like ?', ['%' . $keywords . '%'])
+                    ->orWhereRaw('LOWER(tags) like ?', ['%' . $keywords . '%']);
+            });
+        }
+            if($location) { 
+                $query->where(function ($q) use ($location) {
+                    $q->whereRaw('LOWER(address) like ?', ['%' . $location . '%'])
+                        ->orWhereRaw('LOWER(city) like ?', ['%' . $location . '%'])
+                        ->orWhereRaw('LOWER(state) like ?', ['%' . $location . '%'])
+                        ->orWhereRaw('LOWER(zipcode) like ?', ['%' . $location . '%']);
+                });
+
+        }
+
+        $jobs = $query->paginate(12);
+
+        return view('jobs.index')->with('jobs', $jobs);
+    }
 }
